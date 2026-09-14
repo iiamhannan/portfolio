@@ -387,7 +387,7 @@
     border-color:var(--amber);
     transform:translateY(-3px);
   }
-  .lang-chip .lang-name{ color:var(--text); font-weight:500; }
+  .lang-chip .lang-name{ color:var(--amber); font-weight:600; }
   .lang-chip .lang-level{
     font-family:var(--font-mono);
     font-size:12px;
@@ -590,6 +590,8 @@
   }
   .term-line .prompt{ color:var(--amber); margin-right:10px; }
   .term-line .val{ color:var(--text); }
+  a.val{ text-decoration:none; transition:color .2s ease; }
+  a.val:hover{ color:var(--amber); text-decoration:underline; }
   .contact-links{
     display:flex;
     gap:16px;
@@ -875,10 +877,10 @@
   <div class="eyebrow">06 — Contact</div>
   <h2>Let's work together</h2>
   <div class="contact-panel">
-    <div class="term-line"><span class="prompt">$</span>Phone <span class="val">+92 314 8705044</span></div>
-    <div class="term-line"><span class="prompt">$</span>Email <span class="val">hanan.mehboob92@gmail.com</span></div>
-    <div class="term-line"><span class="prompt">$</span>GitHub <span class="val">github.com/iiamhannan</span></div>
-    <div class="term-line"><span class="prompt">$</span>LinkedIn <span class="val">linkedin.com/in/muhammad-hanan-323bb9219</span></div>
+    <div class="term-line"><span class="prompt">$</span>Phone <a class="val" href="tel:+923148705044">+92 314 8705044</a></div>
+    <div class="term-line"><span class="prompt">$</span>Email <a class="val" href="mailto:hanan.mehboob92@gmail.com">hanan.mehboob92@gmail.com</a></div>
+    <div class="term-line"><span class="prompt">$</span>GitHub <a class="val" href="https://github.com/iiamhannan" target="_blank" rel="noopener">github.com/iiamhannan</a></div>
+    <div class="term-line"><span class="prompt">$</span>LinkedIn <a class="val" href="https://www.linkedin.com/in/muhammad-hanan-323bb9219" target="_blank" rel="noopener">linkedin.com/in/muhammad-hanan-323bb9219</a></div>
     <div class="contact-links">
       <a class="contact-btn primary" href="mailto:hanan.mehboob92@gmail.com">Send an email</a>
       <a class="contact-btn" href="tel:+923148705044">Call</a>
@@ -1124,6 +1126,17 @@
       });
 
       sections.forEach(section => observer.observe(section));
+
+      // If we've scrolled back above the first tracked section (e.g. back
+      // to the hero), no section intersects the observer band, so its
+      // last-known active link would otherwise stay stuck. Clear it.
+      const firstSectionTop = () => sections[0].getBoundingClientRect().top + window.scrollY;
+
+      window.addEventListener('scroll', () => {
+        if (window.scrollY < firstSectionTop() - window.innerHeight * 0.1) {
+          navLinks.forEach(link => link.classList.remove('active'));
+        }
+      }, { passive: true });
     }
   })();
 </script>
