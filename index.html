@@ -961,17 +961,24 @@
 
     try { video.pause(); } catch (_) {}
 
+    // iOS/Android often block programmatic currentTime seeking until
+    // the video has genuinely started playback at least once. Silently
+    // play then immediately pause to "unlock" seeking for scroll-scrub,
+    // instead of falling back to a plain autoplay/loop video.
     if (isTouchDevice) {
-      // Mobile browsers frequently block/throttle programmatic
-      // video.currentTime seeking, which breaks scroll-scrubbing.
-      // Fall back to a normal autoplaying, looping background video.
-      video.autoplay = true;
-      video.loop = true;
-      video.setAttribute('autoplay', '');
-      video.setAttribute('loop', '');
-      const tryPlay = () => video.play().catch(() => {});
-      tryPlay();
-      document.addEventListener('touchstart', tryPlay, { once: true, passive: true });
+      const unlock = () => {
+        const playPromise = video.play();
+        if (playPromise && playPromise.then) {
+          playPromise.then(() => {
+            try { video.pause(); } catch (_) {}
+          }).catch(() => {});
+        } else {
+          try { video.pause(); } catch (_) {}
+        }
+      };
+      unlock();
+      document.addEventListener('touchstart', unlock, { once: true, passive: true });
+      window.addEventListener('scroll', unlock, { once: true, passive: true });
     }
 
     const clamp = (value, min, max) =>
@@ -1001,7 +1008,7 @@
       const progress = getProgress();
       updateHeroText(progress);
 
-      if (isTouchDevice || reduceMotion || !duration) return;
+      if (reduceMotion || !duration) return;
 
       targetTime = progress * duration;
 
@@ -1056,11 +1063,9 @@
 
       if (!initialized) {
         initialized = true;
-        if (!isTouchDevice) {
-          currentTime = 0;
-          targetTime = 0;
-          try { video.currentTime = 0; } catch (_) {}
-        }
+        currentTime = 0;
+        targetTime = 0;
+        try { video.currentTime = 0; } catch (_) {}
       }
 
       updateTarget();
@@ -1078,9 +1083,7 @@
     });
 
     window.addEventListener('load', () => {
-      if (!isTouchDevice) {
-        try { video.pause(); } catch (_) {}
-      }
+      try { video.pause(); } catch (_) {}
       syncDuration();
       updateTarget();
     }, { once: true });
