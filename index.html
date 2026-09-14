@@ -363,7 +363,7 @@
   .languages-label{
     font-family:var(--font-mono);
     font-size:12px;
-    color:var(--amber);
+    color:var(--text-dim);
     letter-spacing:0.06em;
     margin-bottom:16px;
   }
@@ -387,7 +387,7 @@
     border-color:var(--amber);
     transform:translateY(-3px);
   }
-  .lang-chip .lang-name{ color:var(--amber); font-weight:500; }
+  .lang-chip .lang-name{ color:var(--text); font-weight:500; }
   .lang-chip .lang-level{
     font-family:var(--font-mono);
     font-size:12px;
@@ -911,6 +911,7 @@
     if (year) year.textContent = new Date().getFullYear();
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
 
     if (navLogo) {
       navLogo.addEventListener('click', (e) => {
@@ -960,6 +961,19 @@
 
     try { video.pause(); } catch (_) {}
 
+    if (isTouchDevice) {
+      // Mobile browsers frequently block/throttle programmatic
+      // video.currentTime seeking, which breaks scroll-scrubbing.
+      // Fall back to a normal autoplaying, looping background video.
+      video.autoplay = true;
+      video.loop = true;
+      video.setAttribute('autoplay', '');
+      video.setAttribute('loop', '');
+      const tryPlay = () => video.play().catch(() => {});
+      tryPlay();
+      document.addEventListener('touchstart', tryPlay, { once: true, passive: true });
+    }
+
     const clamp = (value, min, max) =>
       Math.max(min, Math.min(max, value));
 
@@ -987,7 +1001,7 @@
       const progress = getProgress();
       updateHeroText(progress);
 
-      if (reduceMotion || !duration) return;
+      if (isTouchDevice || reduceMotion || !duration) return;
 
       targetTime = progress * duration;
 
@@ -1042,9 +1056,11 @@
 
       if (!initialized) {
         initialized = true;
-        currentTime = 0;
-        targetTime = 0;
-        try { video.currentTime = 0; } catch (_) {}
+        if (!isTouchDevice) {
+          currentTime = 0;
+          targetTime = 0;
+          try { video.currentTime = 0; } catch (_) {}
+        }
       }
 
       updateTarget();
@@ -1062,7 +1078,9 @@
     });
 
     window.addEventListener('load', () => {
-      try { video.pause(); } catch (_) {}
+      if (!isTouchDevice) {
+        try { video.pause(); } catch (_) {}
+      }
       syncDuration();
       updateTarget();
     }, { once: true });
@@ -1088,39 +1106,21 @@
         });
       };
 
-      const clearActive = () => {
-        navLinks.forEach(link => link.classList.remove('active'));
-      };
+      const observer = new IntersectionObserver((entries) => {
+        const visible = entries
+          .filter(entry => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
 
-      // A section is "current" only while the reference line (a bit below
-      // the fixed nav bar) actually falls between its top and bottom edge —
-      // so the underline appears exactly when you're inside that section,
-      // and disappears the moment you leave it (in either direction).
-      const NAV_OFFSET = 90;
-
-      const updateActiveSection = () => {
-        const referenceY = window.scrollY + NAV_OFFSET;
-        let currentId = null;
-
-        for (const section of sections) {
-          const top = section.offsetTop;
-          const bottom = top + section.offsetHeight;
-          if (referenceY >= top && referenceY < bottom) {
-            currentId = section.id;
-            break;
-          }
+        if (visible.length) {
+          setActive(visible[0].target.id);
         }
+      }, {
+        root: null,
+        rootMargin: '-35% 0px -55% 0px',
+        threshold: [0, 0.25, 0.5, 0.75, 1]
+      });
 
-        if (currentId) {
-          setActive(currentId);
-        } else {
-          clearActive();
-        }
-      };
-
-      updateActiveSection();
-      window.addEventListener('scroll', updateActiveSection, { passive: true });
-      window.addEventListener('resize', updateActiveSection);
+      sections.forEach(section => observer.observe(section));
     }
   })();
 </script>
