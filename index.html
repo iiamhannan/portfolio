@@ -1209,13 +1209,40 @@
     const navLinksEl = document.getElementById('navLinks');
 
     if (navToggle && navLinksEl) {
+      let lockedScrollY = 0;
+
+      const lockBodyScroll = () => {
+        lockedScrollY = window.scrollY;
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${lockedScrollY}px`;
+        document.body.style.left = '0';
+        document.body.style.right = '0';
+        document.body.style.width = '100%';
+      };
+
+      const unlockBodyScroll = () => {
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.left = '';
+        document.body.style.right = '';
+        document.body.style.width = '';
+        window.scrollTo(0, lockedScrollY);
+      };
+
       const closeMenu = () => {
+        const wasOpen = navLinksEl.classList.contains('open');
         navLinksEl.classList.remove('open');
         navToggle.setAttribute('aria-expanded', 'false');
+        if (wasOpen) unlockBodyScroll();
       };
       const toggleMenu = () => {
         const isOpen = navLinksEl.classList.toggle('open');
         navToggle.setAttribute('aria-expanded', String(isOpen));
+        if (isOpen) {
+          lockBodyScroll();
+        } else {
+          unlockBodyScroll();
+        }
       };
 
       navToggle.addEventListener('click', (e) => {
