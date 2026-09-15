@@ -99,15 +99,118 @@
     letter-spacing:0.02em;
     transition:all .2s ease;
   }
-  .nav-resume:hover{ border-color:var(--amber); color:var(--amber); }
+  .nav-resume:hover{ border-color:var(--amber); color:var(--amber); transform:translateY(-2px); }
+
+  /* three-dot menu toggle — hidden on desktop, shown on mobile only */
+  .nav-toggle{
+    display:none;
+    flex-direction:row;
+    justify-content:center;
+    align-items:center;
+    gap:5px;
+    padding:0;
+    line-height:0;
+    box-sizing:border-box;
+    width:40px;
+    height:40px;
+    border-radius:10px;
+    background:rgba(23,26,31,.78);
+    box-shadow:0 2px 8px rgba(0,0,0,.25);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+    border:1px solid rgba(242,243,245,.16);
+    cursor:pointer;
+    flex-shrink:0;
+    isolation:isolate;
+    mix-blend-mode:normal;
+    transition:background .2s ease, border-color .2s ease, transform .15s ease;
+  }
+  .nav-toggle span{
+    display:block;
+    width:5px;
+    height:5px;
+    border-radius:50%;
+    background:var(--text);
+    transition:background .2s ease;
+  }
+  .nav-toggle:hover{ border-color:rgba(212,146,43,.5); transform:translateY(-2px); }
+  .nav-toggle:hover span{ background:var(--amber); }
+  .nav-toggle:active{ transform:scale(0.92); }
+  .nav-toggle[aria-expanded="true"]{ background:rgba(212,146,43,.18); border-color:var(--amber); }
+  .nav-toggle[aria-expanded="true"] span{ background:var(--amber); }
   @media (max-width:640px){
-    .nav{ padding:18px 5vw; }
-    .nav-links{ gap:14px; }
-    .nav-links a{ font-size:10px; }
-    .nav-resume{ font-size:10px; padding:7px 12px; }
+    .nav{
+      padding:16px 4vw; gap:10px;
+      mix-blend-mode:normal;
+      background:linear-gradient(180deg, rgba(15,17,21,.7) 0%, rgba(15,17,21,0) 100%);
+    }
+    .nav-logo{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
+    }
+    .nav-logo .arabic-mark{ font-size:20px; }
+    .nav-toggle{ display:flex; order:-1; }
+    .nav-resume{ font-size:9px; padding:6px 10px; white-space:nowrap; flex-shrink:0; }
+    .nav-links{
+      order:4;
+      position:absolute;
+      top:100%;
+      left:0;
+      right:0;
+      flex-direction:column;
+      align-items:flex-start;
+      gap:0;
+      background:var(--bg-panel);
+      border-bottom:1px solid rgba(242,243,245,.12);
+      box-shadow:0 12px 24px rgba(0,0,0,.35);
+      max-height:0;
+      overflow:hidden;
+      opacity:0;
+      pointer-events:none;
+      isolation:isolate;
+      mix-blend-mode:normal;
+      transition:max-height .25s ease, opacity .2s ease;
+    }
+    .nav-links.open{
+      max-height:calc(100vh - 70px);
+      overflow-y:auto;
+      opacity:1;
+      pointer-events:auto;
+    }
+    .nav-links li{ width:100%; }
+    .nav-links a{
+      display:block;
+      width:100%;
+      padding:15px 6vw;
+      font-family:var(--font-mono);
+      font-size:12px;
+      letter-spacing:0.04em;
+      color:var(--teal);
+      border-bottom:1px solid rgba(242,243,245,.08);
+      border-left:3px solid transparent;
+      transition:background .2s ease, color .2s ease, border-color .2s ease;
+    }
+    .nav-links a:hover,
+    .nav-links a:active{
+      background:rgba(95,184,166,.1);
+      color:var(--teal);
+    }
+    .nav-links a.active{
+      color:var(--teal);
+      border-left-color:var(--teal);
+      background:rgba(95,184,166,.08);
+    }
+    .nav-links a::after{ display:none; }
     .hero-pin{ height:250vh; }
     .hero-kicker{ font-size:10px; letter-spacing:.12em; }
     .scroll-cue{ margin-top:26px; font-size:9px; }
+  }
+
+  @media (max-width:400px){
+    .nav{ padding:14px 3.5vw; }
+    .nav-resume{ font-size:8px; padding:5px 8px; }
   }
 
   /* ---------- hero scroll-video ---------- */
@@ -363,7 +466,7 @@
   .languages-label{
     font-family:var(--font-mono);
     font-size:12px;
-    color:var(--text-dim);
+    color:var(--amber);
     letter-spacing:0.06em;
     margin-bottom:16px;
   }
@@ -666,7 +769,10 @@
   <a class="nav-logo" href="#" aria-label="Hanan — back to top">
     <span class="arabic-mark">حَنَان</span>
   </a>
-  <ul class="nav-links">
+  <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="navLinks">
     <li><a href="#about">About</a></li>
     <li><a href="#education">Education</a></li>
     <li><a href="#skills">Skills</a></li>
@@ -862,7 +968,7 @@
         <li>Interactive dashboard views styled with Bootstrap, backed by dynamic relational database CRUD operations.</li>
       </ul>
       <div class="project-stack">
-        <span>Python</span><span>Django</span><span>Bootstrap</span><span>MySQL</span>
+        <span>Python</span><span>Django</span><span>Bootstrap</span><span>MySQL</span><span>Pandas</span><span>NumPy</span><span>Matplotlib</span>
       </div>
       <div class="project-links">
         <a class="project-link primary" href="https://iiamhannan26.pythonanywhere.com" target="_blank" rel="noopener">View live</a>
@@ -1092,6 +1198,41 @@
 
     // Start immediately if metadata is already available.
     syncDuration();
+
+    /*
+      Mobile three-dot nav menu:
+      - Toggles the nav-links dropdown open/closed.
+      - Closes automatically when a link is tapped or the user
+        taps outside the menu.
+    */
+    const navToggle = document.getElementById('navToggle');
+    const navLinksEl = document.getElementById('navLinks');
+
+    if (navToggle && navLinksEl) {
+      const closeMenu = () => {
+        navLinksEl.classList.remove('open');
+        navToggle.setAttribute('aria-expanded', 'false');
+      };
+      const toggleMenu = () => {
+        const isOpen = navLinksEl.classList.toggle('open');
+        navToggle.setAttribute('aria-expanded', String(isOpen));
+      };
+
+      navToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMenu();
+      });
+
+      navLinksEl.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMenu);
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!navLinksEl.contains(e.target) && e.target !== navToggle) {
+          closeMenu();
+        }
+      });
+    }
 
     /*
       Active nav link tracking:
