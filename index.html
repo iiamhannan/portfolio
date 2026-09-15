@@ -1226,7 +1226,7 @@
         document.body.style.left = '';
         document.body.style.right = '';
         document.body.style.width = '';
-        window.scrollTo(0, lockedScrollY);
+        window.scrollTo({ top: lockedScrollY, left: 0, behavior: 'instant' });
       };
 
       const closeMenu = () => {
