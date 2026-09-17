@@ -1275,18 +1275,36 @@
     if (navLinks.length && sections.length) {
       const setActive = (id) => {
         navLinks.forEach(link => {
-          link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+          link.classList.toggle('active', id !== null && link.getAttribute('href') === `#${id}`);
         });
       };
 
-      const observer = new IntersectionObserver((entries) => {
-        const visible = entries
+      // Track every section's latest known intersection state ourselves,
+      // since each observer callback only reports the sections whose
+      // state just changed, not the full list. Deciding "what's active"
+      // from this map (instead of also reacting to raw scroll events)
+      // keeps a single source of truth and avoids a race where a
+      // scroll-position check and the observer fight over the class
+      // mid-animation (e.g. when jumping straight into the first section).
+      const state = new Map(sections.map(section => [section, { isIntersecting: false, intersectionRatio: 0 }]));
+
+      const recompute = () => {
+        const visible = sections
+          .map(section => ({ id: section.id, ...state.get(section) }))
           .filter(entry => entry.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
 
-        if (visible.length) {
-          setActive(visible[0].target.id);
-        }
+        setActive(visible.length ? visible[0].id : null);
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          state.set(entry.target, {
+            isIntersecting: entry.isIntersecting,
+            intersectionRatio: entry.intersectionRatio
+          });
+        });
+        recompute();
       }, {
         root: null,
         rootMargin: '-35% 0px -55% 0px',
@@ -1294,17 +1312,6 @@
       });
 
       sections.forEach(section => observer.observe(section));
-
-      // If we've scrolled back above the first tracked section (e.g. back
-      // to the hero), no section intersects the observer band, so its
-      // last-known active link would otherwise stay stuck. Clear it.
-      const firstSectionTop = () => sections[0].getBoundingClientRect().top + window.scrollY;
-
-      window.addEventListener('scroll', () => {
-        if (window.scrollY < firstSectionTop() - window.innerHeight * 0.1) {
-          navLinks.forEach(link => link.classList.remove('active'));
-        }
-      }, { passive: true });
     }
   })();
 </script>
