@@ -793,7 +793,7 @@
     <div class="hero-grain"></div>
 
     <div class="hero-content" id="heroContent">
-      <div class="hero-kicker">FULL STACK DEVELOPER</div>
+      <div class="hero-kicker">FULL STACK DEVELOPER | MACHINE LEARNING &amp; AI</div>
       <h1 class="hero-title">Muhammad Hanan</h1>
       <p class="hero-sub">Building responsive, user-focused web applications with Python, Django, databases, and modern frontend technologies.</p>
       <div class="scroll-cue"><span></span> SCROLL TO EXPLORE</div>
@@ -809,14 +809,14 @@
   <h2>Building software that holds up under real use.</h2>
   <div class="about-grid">
     <div class="about-text">
-      <p>Full Stack Developer with hands-on experience building responsive, user-centric web applications using Python, Django, JavaScript, HTML, CSS, C++, and SQL (MySQL). Skilled in developing scalable backend systems, designing intuitive user interfaces, and managing relational databases.</p>
+      <p>Full Stack Developer with hands-on experience building responsive, user-centric web applications using Python, Django, HTML, CSS, C++, and SQL (MySQL), along with working knowledge of Machine Learning and Deep Learning using scikit-learn and PyTorch. Skilled in scalable backend systems, relational databases, and predictive modeling.</p>
       <p>Proficient in version control with Git and GitHub, with experience in data analysis and visualization using NumPy, Pandas, and Matplotlib. Committed to writing clean, maintainable code and delivering reliable software — known for strong problem-solving, analytical thinking, and effective collaboration in team environments.</p>
     </div>
     <div class="about-stack">
       <div class="line"><span class="kw">class</span> Developer:</div>
       <div class="line">&nbsp;&nbsp;role = <span class="str">"Full Stack Developer"</span></div>
       <div class="line">&nbsp;&nbsp;stack = [<span class="str">"Python"</span>, <span class="str">"Django"</span>,</div>
-      <div class="line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">"JavaScript"</span>, <span class="str">"SQL"</span>]</div>
+      <div class="line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">"PyTorch"</span>, <span class="str">"SQL"</span>]</div>
       <div class="line">&nbsp;&nbsp;focus = <span class="str">"clean, reliable code"</span></div>
       <div class="line">&nbsp;&nbsp;<span class="kw">def</span> collaborate(self):</div>
       <div class="line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="str">"always"</span></div>
@@ -873,7 +873,6 @@
       <div class="skill-import"><span class="kw">from</span> <span class="mod">languages</span> <span class="kw">import</span> *</div>
       <div class="skill-chips">
         <span class="chip">Python</span>
-        <span class="chip">JavaScript</span>
         <span class="chip">C++</span>
         <span class="chip">SQL</span>
       </div>
@@ -893,6 +892,17 @@
         <span class="chip">Pandas</span>
         <span class="chip">Matplotlib</span>
         <span class="chip">MySQL</span>
+      </div>
+    </div>
+    <div>
+      <div class="skill-import"><span class="kw">from</span> <span class="mod">ml</span> <span class="kw">import</span> *</div>
+      <div class="skill-chips">
+        <span class="chip">Machine Learning</span>
+        <span class="chip">Deep Learning</span>
+        <span class="chip">PyTorch</span>
+        <span class="chip">scikit-learn</span>
+        <span class="chip">XGBoost</span>
+        <span class="chip">Streamlit</span>
       </div>
     </div>
     <div>
@@ -941,18 +951,34 @@
     change ".projects-grid two" to plain ".projects-grid" so the layout
     switches back to a responsive 3-column grid automatically.
   -->
-  <div class="projects-grid two">
+  <div class="projects-grid">
+
+    <div class="project-card">
+      <div class="project-tag">Machine Learning — 2026</div>
+      <h3>Flood Prediction</h3>
+      <ul>
+        <li>Regression model in Python predicting flood probability from 20 environmental and human-made factors, using the Kaggle Playground S4E5 dataset (~1.1M rows).</li>
+        <li>Compared Linear Regression, Random Forest, and XGBoost with scikit-learn pipelines; the best model achieved an R² of 0.85 on a held-out test set.</li>
+        <li>EDA and feature importance analysis, with the trained model served as an interactive Streamlit app for live predictions.</li>
+      </ul>
+      <div class="project-stack">
+        <span>Python</span><span>scikit-learn</span><span>XGBoost</span><span>Pandas</span><span>Streamlit</span>
+      </div>
+      <div class="project-links">
+        <a class="project-link primary" href="https://github.com/iiamhannan/flood-prediction" target="_blank" rel="noopener">View on GitHub</a>
+      </div>
+    </div>
 
     <div class="project-card">
       <div class="project-tag">Web Application — 2026</div>
       <h3>Hanni's Espresso</h3>
       <ul>
         <li>Full-stack order-ahead coffee shop app built with Python and Django — browse interactive menus and place direct orders.</li>
-        <li>Clean, responsive interface in HTML5, CSS3, and JavaScript with dynamic item pricing and bill calculation.</li>
+        <li>Clean, responsive interface in HTML5 and CSS3 with dynamic item pricing and bill calculation.</li>
         <li>Custom Django ORM models and database management, deployed live on PythonAnywhere for real-time order processing.</li>
       </ul>
       <div class="project-stack">
-        <span>Python</span><span>Django</span><span>JavaScript</span><span>HTML5</span><span>CSS3</span>
+        <span>Python</span><span>Django</span><span>HTML5</span><span>CSS3</span>
       </div>
       <div class="project-links">
         <a class="project-link primary" href="https://iiamhannan.pythonanywhere.com/" target="_blank" rel="noopener">View live</a>
