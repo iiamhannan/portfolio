@@ -14,7 +14,7 @@ Enable GitHub Pages on this repo (Settings → Pages → Deploy from `main` bran
 ## 📂 Structure
 ```
 ├── index.html                 # Main portfolio page
-├── Muhammad_Hanan_CV.pdf       # Downloadable resume
+├── Muhammad_Hanan_CVs.pdf       # Downloadable resume
 └── Muhammad_Hanan_Video.mp4    # Hero background video
 ```
 
