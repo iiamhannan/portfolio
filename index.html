@@ -271,7 +271,8 @@
     font-size:12px;
     font-weight:600;
     letter-spacing:0.16em;
-    color:var(--amber);
+    color:var(--teal);
+    text-shadow:0 1px 8px rgba(0,0,0,.55);
   }
   .hero-kicker::before,
   .hero-kicker::after{
@@ -952,6 +953,22 @@
     switches back to a responsive 3-column grid automatically.
   -->
   <div class="projects-grid">
+
+    <div class="project-card">
+      <div class="project-tag">Deep Learning — 2026</div>
+      <h3>Chest X-Ray Pneumonia Screening</h3>
+      <ul>
+        <li>Pneumonia screening tool built in PyTorch using EfficientNet-B0 transfer learning, class-weighted loss, and early stopping.</li>
+        <li>Evaluated with sensitivity, specificity, and AUC instead of accuracy alone.</li>
+        <li>Grad-CAM heatmaps for model explainability, with predictions served through a FastAPI REST API and a Bootstrap 5 web interface.</li>
+      </ul>
+      <div class="project-stack">
+        <span>Python</span><span>PyTorch</span><span>FastAPI</span><span>Grad-CAM</span><span>Bootstrap 5</span>
+      </div>
+      <div class="project-links">
+        <a class="project-link primary" href="https://github.com/iiamhannan/YOUR-REPO-NAME" target="_blank" rel="noopener">View on GitHub</a>
+      </div>
+    </div>
 
     <div class="project-card">
       <div class="project-tag">Machine Learning — 2026</div>
