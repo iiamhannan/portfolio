@@ -323,6 +323,12 @@
     --text-muted:#A9AEB8;
     --amber:#D4922B;
     --resume-border:rgba(242,243,245,.35);
+    --glass-bg: rgba(255,255,255,.07);
+    --glass-border: rgba(255,255,255,.16);
+    --glass-hi: rgba(255,255,255,.22);
+    --glass-shadow: 0 8px 32px rgba(0,0,0,.35);
+    --glass-chip: rgba(255,255,255,.08);
+    --glass-chip-active: rgba(255,255,255,.15);
   }
   @media (min-width:641px){
     :root[data-theme="light"] .nav.on-hero .nav-links{
@@ -353,8 +359,60 @@
   @media (min-width:641px){
     /* glass needs a normal blend mode so backdrop-filter can see the page behind it */
     .nav{ mix-blend-mode:normal; padding-top:12px; padding-bottom:12px; }
-    .nav-resume{ padding:7px 14px; }
-    .theme-toggle{ width:32px; height:32px; }
+
+    /* theme toggle + resume share one liquid-glass pill, like the nav links */
+    .nav-actions{
+      position:relative;
+      gap:2px;
+      padding:4px;
+      border-radius:999px;
+      overflow:hidden;
+      background:var(--glass-bg);
+      border:1px solid var(--glass-border);
+      -webkit-backdrop-filter:blur(18px) saturate(180%);
+      backdrop-filter:blur(18px) saturate(180%);
+      box-shadow:
+        var(--glass-shadow),
+        inset 0 1px 0 var(--glass-hi),
+        inset 0 -1px 0 rgba(255,255,255,.06);
+      transition:background .3s ease, border-color .3s ease, box-shadow .3s ease;
+    }
+    .nav-actions::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:inherit;
+      background:linear-gradient(120deg,
+        rgba(255,255,255,.28) 0%,
+        rgba(255,255,255,0) 38%,
+        rgba(255,255,255,0) 68%,
+        rgba(255,255,255,.10) 100%);
+      pointer-events:none;
+    }
+    .nav-actions .theme-toggle,
+    .nav-actions .nav-resume{
+      position:relative;
+      z-index:1;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      height:32px;
+      border:1px solid transparent;
+      border-radius:999px;
+      background:transparent;
+      transform:none;
+      transition:color .2s ease;
+    }
+    .nav-actions .theme-toggle{ width:36px; padding:0; }
+    .nav-actions .nav-resume{ padding:0 14px; font-size:12px; }
+    .nav-actions .theme-toggle:hover,
+    .nav-actions .nav-resume:hover{
+      border-color:transparent;
+      color:var(--amber);
+      transform:none;
+    }
+    .nav-actions .theme-toggle:focus-visible,
+    .nav-actions .nav-resume:focus-visible{ outline-offset:-2px; }
 
     .nav-links{
       position:relative;
@@ -1012,6 +1070,159 @@
   @media (max-width:640px){
     .back-to-top{ bottom:20px; right:20px; width:42px; height:42px; }
   }
+
+  /* ===== MOBILE: glass buttons + compact menu (keep this block LAST) ===== */
+  @media (max-width:640px){
+
+    /* theme toggle + resume = one glass pill (same as desktop) */
+    .nav-actions{
+      position:relative;
+      gap:2px;
+      padding:3px;
+      border-radius:999px;
+      overflow:hidden;
+      background:var(--glass-bg);
+      border:1px solid var(--glass-border);
+      -webkit-backdrop-filter:blur(18px) saturate(180%);
+      backdrop-filter:blur(18px) saturate(180%);
+      box-shadow:var(--glass-shadow),
+        inset 0 1px 0 var(--glass-hi),
+        inset 0 -1px 0 rgba(255,255,255,.06);
+    }
+    .nav-actions::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:inherit;
+      background:linear-gradient(120deg,
+        rgba(255,255,255,.28) 0%,
+        rgba(255,255,255,0) 38%,
+        rgba(255,255,255,0) 68%,
+        rgba(255,255,255,.10) 100%);
+      pointer-events:none;
+    }
+    .nav-actions .theme-toggle,
+    .nav-actions .nav-resume{
+      position:relative;
+      z-index:1;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      height:30px;
+      border:1px solid transparent;
+      border-radius:999px;
+      background:transparent;
+      transform:none;
+    }
+    .nav-actions .theme-toggle{ width:30px; padding:0; }
+    .nav-actions .theme-toggle svg{ width:15px; height:15px; }
+    .nav-actions .nav-resume{ padding:0 12px; font-size:11px; }
+    .nav-actions .theme-toggle:hover,
+    .nav-actions .nav-resume:hover,
+    .nav-actions .theme-toggle:active,
+    .nav-actions .nav-resume:active{
+      border-color:transparent;
+      color:var(--amber);
+      background:var(--glass-chip-active);
+      transform:none;
+    }
+
+    /* three-dot button is glass too */
+    .nav-toggle{
+      width:38px;
+      height:38px;
+      border-radius:999px;
+      background:var(--glass-bg);
+      border:1px solid var(--glass-border);
+      -webkit-backdrop-filter:blur(18px) saturate(180%);
+      backdrop-filter:blur(18px) saturate(180%);
+      box-shadow:var(--glass-shadow), inset 0 1px 0 var(--glass-hi);
+      gap:4px;
+    }
+    .nav-toggle span{ width:4px; height:4px; }
+    :root[data-theme="light"] .nav:not(.on-hero) .nav-toggle{
+      background:var(--toggle-bg);
+    }
+
+    /* dropdown menu: small, compact, floating glass panel */
+    .nav-links{
+      top:calc(100% + 4px);
+      left:4vw;
+      right:auto;
+      width:min(190px, 58vw);
+      padding:0;
+      border:0;
+      border-radius:16px;
+      background:var(--toggle-bg);
+      -webkit-backdrop-filter:blur(20px) saturate(180%);
+      backdrop-filter:blur(20px) saturate(180%);
+      box-shadow:var(--glass-shadow), inset 0 1px 0 var(--glass-hi);
+      gap:2px;
+    }
+    .nav-links.open{
+      padding:6px;
+      border:1px solid var(--glass-border);
+      max-height:calc(100vh - 90px);
+    }
+    .nav-links a{
+      padding:9px 12px;
+      font-size:11px;
+      letter-spacing:0.03em;
+      border:0;
+      border-radius:10px;
+    }
+    .nav-links{ touch-action:none; }
+    .nav-links li{ position:relative; z-index:1; }
+    .nav-links a,
+    .nav-links a:hover,
+    .nav-links a:active{ background:transparent; }
+    .nav-links a.active{
+      background:transparent;
+      border-left:0;
+      color:var(--teal);
+    }
+
+    /* sliding glass lens on mobile (menu + button pill) */
+    .nav-indicator{
+      display:block;
+      position:absolute;
+      left:0;
+      top:0;
+      z-index:0;
+      width:0;
+      height:0;
+      border-radius:999px;
+      background:var(--glass-chip-active);
+      border:1px solid var(--glass-border);
+      box-shadow:
+        inset 0 1px 0 var(--glass-hi),
+        inset 0 -1px 0 rgba(255,255,255,.06),
+        0 4px 14px rgba(0,0,0,.18);
+      opacity:0;
+      pointer-events:none;
+      will-change:transform, width;
+      transition:
+        transform .55s cubic-bezier(.34,1.35,.64,1),
+        width .55s cubic-bezier(.34,1.35,.64,1),
+        height .3s ease,
+        opacity .25s ease,
+        background .3s ease;
+    }
+    .nav-indicator.visible{ opacity:1; }
+    .nav-indicator::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:inherit;
+      background:linear-gradient(180deg, rgba(255,255,255,.32) 0%, rgba(255,255,255,0) 55%);
+      pointer-events:none;
+    }
+    .nav-links .nav-indicator{
+      background:rgba(95,184,166,.18);
+      border-color:rgba(95,184,166,.35);
+    }
+    .nav-actions{ touch-action:none; }
+  }
 </style>
 </head>
 <body>
@@ -1144,23 +1355,8 @@
         <span class="chip">Python</span>
         <span class="chip">C++</span>
         <span class="chip">SQL</span>
-      </div>
-    </div>
-    <div>
-      <div class="skill-import"><span class="kw">from</span> <span class="mod">web</span> <span class="kw">import</span> *</div>
-      <div class="skill-chips">
-        <span class="chip">Django</span>
         <span class="chip">HTML5</span>
         <span class="chip">CSS3</span>
-      </div>
-    </div>
-    <div>
-      <div class="skill-import"><span class="kw">from</span> <span class="mod">data</span> <span class="kw">import</span> *</div>
-      <div class="skill-chips">
-        <span class="chip">NumPy</span>
-        <span class="chip">Pandas</span>
-        <span class="chip">Matplotlib</span>
-        <span class="chip">MySQL</span>
       </div>
     </div>
     <div>
@@ -1168,10 +1364,61 @@
       <div class="skill-chips">
         <span class="chip">Machine Learning</span>
         <span class="chip">Deep Learning</span>
+        <span class="chip">Computer Vision</span>
+        <span class="chip">Image Classification</span>
+        <span class="chip">Convolutional Neural Networks (CNN)</span>
+        <span class="chip">Transfer Learning</span>
+        <span class="chip">Supervised Learning</span>
         <span class="chip">PyTorch</span>
         <span class="chip">scikit-learn</span>
         <span class="chip">XGBoost</span>
+        <span class="chip">EfficientNet</span>
+        <span class="chip">ResNet</span>
+        <span class="chip">Grad-CAM</span>
+        <span class="chip">Explainable AI</span>
+        <span class="chip">ONNX</span>
+        <span class="chip">Model Training and Evaluation</span>
+        <span class="chip">Model Deployment</span>
+      </div>
+    </div>
+    <div>
+      <div class="skill-import"><span class="kw">from</span> <span class="mod">data</span> <span class="kw">import</span> *</div>
+      <div class="skill-chips">
+        <span class="chip">Pandas</span>
+        <span class="chip">NumPy</span>
+        <span class="chip">Matplotlib</span>
+        <span class="chip">Exploratory Data Analysis (EDA)</span>
+        <span class="chip">Feature Engineering</span>
+        <span class="chip">Regression</span>
+        <span class="chip">Predictive Modeling</span>
+        <span class="chip">Data Visualization</span>
+      </div>
+    </div>
+    <div>
+      <div class="skill-import"><span class="kw">from</span> <span class="mod">backend</span> <span class="kw">import</span> *</div>
+      <div class="skill-chips">
+        <span class="chip">Django</span>
+        <span class="chip">FastAPI</span>
+        <span class="chip">REST API</span>
+        <span class="chip">Django ORM</span>
+        <span class="chip">API Integration</span>
+        <span class="chip">Full Stack Web Development</span>
+      </div>
+    </div>
+    <div>
+      <div class="skill-import"><span class="kw">from</span> <span class="mod">frontend</span> <span class="kw">import</span> *</div>
+      <div class="skill-chips">
+        <span class="chip">Bootstrap 5</span>
         <span class="chip">Streamlit</span>
+        <span class="chip">Responsive Web Design</span>
+      </div>
+    </div>
+    <div>
+      <div class="skill-import"><span class="kw">from</span> <span class="mod">databases</span> <span class="kw">import</span> *</div>
+      <div class="skill-chips">
+        <span class="chip">MySQL</span>
+        <span class="chip">SQLite</span>
+        <span class="chip">Relational Databases</span>
       </div>
     </div>
     <div>
@@ -1179,6 +1426,11 @@
       <div class="skill-chips">
         <span class="chip">Git</span>
         <span class="chip">GitHub</span>
+        <span class="chip">Version Control</span>
+        <span class="chip">Postman</span>
+        <span class="chip">Cloud Deployment</span>
+        <span class="chip">PythonAnywhere</span>
+        <span class="chip">Render</span>
       </div>
     </div>
   </div>
@@ -1702,6 +1954,8 @@
 
       let shown = false;
       let hovered = null;
+      const isMobile = () => window.matchMedia('(max-width:640px)').matches;
+      const isMouse = (e) => !e.pointerType || e.pointerType === 'mouse';
 
       const place = (link, animate) => {
         if (getComputedStyle(ind).display === 'none') return;
@@ -1721,6 +1975,12 @@
 
       const sync = () => {
         if (hovered) return;
+        // mobile: lens only exists while the dropdown is open
+        if (isMobile() && !list.classList.contains('open')) {
+          ind.classList.remove('visible');
+          shown = false;
+          return;
+        }
         const active = links.find(l => l.classList.contains('active'));
         if (!active) {
           ind.classList.remove('visible');
@@ -1767,20 +2027,107 @@
       // and glides back to the active link when the cursor leaves the pill
       links.forEach(link => {
         link.addEventListener('pointerenter', (e) => {
-          if (e.pointerType && e.pointerType !== 'mouse') return;
+          if (!isMouse(e) && !isMobile()) return;
           hovered = link;
           place(link, shown);
           ind.classList.add('visible');
           shown = true;
         });
       });
+      // finger dragging across the menu: lens follows the touch
+      list.addEventListener('pointermove', (e) => {
+        if (isMouse(e) || !isMobile()) return;
+        const el = document.elementFromPoint(e.clientX, e.clientY);
+        const link = el && el.closest ? el.closest('a[href^="#"]') : null;
+        if (link && links.includes(link) && link !== hovered) {
+          hovered = link;
+          place(link, true);
+          ind.classList.add('visible');
+          shown = true;
+        }
+      });
       list.addEventListener('pointerleave', (e) => {
-        if (e.pointerType && e.pointerType !== 'mouse') return;
+        if (!isMouse(e) && !isMobile()) return;
         hovered = null;
         sync();
       });
+      list.addEventListener('pointercancel', () => { hovered = null; sync(); });
 
       sync();
+    }
+
+    /* Glass lens for the theme toggle + Resume pill: follows the cursor (and keyboard focus) */
+    const actions = document.querySelector('.nav-actions');
+    if (actions) {
+      const items = Array.from(actions.querySelectorAll('.theme-toggle, .nav-resume'));
+      const lens = document.createElement('div');
+      lens.className = 'nav-indicator';
+      lens.setAttribute('aria-hidden', 'true');
+      actions.insertBefore(lens, actions.firstChild);
+
+      let lensShown = false;
+
+      const placeLens = (el, animate) => {
+        if (getComputedStyle(lens).display === 'none') return;
+        const ar = actions.getBoundingClientRect();
+        const r = el.getBoundingClientRect();
+        const x = r.left - ar.left - actions.clientLeft;
+        const y = r.top - ar.top - actions.clientTop;
+        if (!animate) lens.style.transition = 'none';
+        lens.style.width = r.width + 'px';
+        lens.style.height = r.height + 'px';
+        lens.style.transform = `translate(${x}px, ${y}px)`;
+        if (!animate) {
+          void lens.offsetWidth;
+          lens.style.transition = '';
+        }
+      };
+
+      const showOn = (el) => {
+        placeLens(el, lensShown);
+        lens.classList.add('visible');
+        lensShown = true;
+      };
+      const hideLens = () => {
+        lens.classList.remove('visible');
+        lensShown = false;
+      };
+
+      const mobileNow = () => window.matchMedia('(max-width:640px)').matches;
+      let hideTimer = 0;
+
+      items.forEach(el => {
+        el.addEventListener('pointerenter', (e) => {
+          const mouse = !e.pointerType || e.pointerType === 'mouse';
+          if (!mouse && !mobileNow()) return;
+          clearTimeout(hideTimer);
+          showOn(el);
+        });
+        el.addEventListener('focus', () => {
+          if (el.matches(':focus-visible')) showOn(el);
+        });
+        el.addEventListener('blur', () => {
+          if (!actions.matches(':hover')) hideLens();
+        });
+      });
+      // finger sliding between the theme button and Resume
+      actions.addEventListener('pointermove', (e) => {
+        if ((!e.pointerType || e.pointerType === 'mouse') || !mobileNow()) return;
+        const el = document.elementFromPoint(e.clientX, e.clientY);
+        const target = el && el.closest ? el.closest('.theme-toggle, .nav-resume') : null;
+        if (target && items.includes(target)) { clearTimeout(hideTimer); showOn(target); }
+      });
+      actions.addEventListener('pointerleave', (e) => {
+        const mouse = !e.pointerType || e.pointerType === 'mouse';
+        if (!mouse) {
+          if (!mobileNow()) return;
+          // touch: let the lens glide for a moment, then fade out
+          clearTimeout(hideTimer);
+          hideTimer = setTimeout(hideLens, 450);
+          return;
+        }
+        if (!actions.contains(document.activeElement) || !document.activeElement.matches(':focus-visible')) hideLens();
+      });
     }
 
     const mq = window.matchMedia('(prefers-color-scheme: light)');
