@@ -4,6 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Portfolio — Full Stack Developer</title>
+<script>
+  (function(){
+    var t = null;
+    try { t = localStorage.getItem('theme'); } catch (e) {}
+    if (t !== 'light' && t !== 'dark') {
+      t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+    }
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
@@ -22,6 +32,51 @@
     --font-body: 'Inter', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
     --font-arabic: 'Amiri', serif;
+
+    /* theme-aware helpers */
+    --on-amber: #0F1115;
+    --bg-rgb: 15,17,21;
+    --hair: rgba(242,243,245,.12);
+    --hair-soft: rgba(242,243,245,.08);
+    --toggle-bg: rgba(23,26,31,.78);
+    --toggle-border: rgba(242,243,245,.16);
+    --resume-border: rgba(242,243,245,.35);
+    --nav-bg: rgba(15,17,21,.85);
+    --glass-bg: rgba(255,255,255,.07);
+    --glass-border: rgba(255,255,255,.16);
+    --glass-hi: rgba(255,255,255,.22);
+    --glass-shadow: 0 8px 32px rgba(0,0,0,.35);
+    --glass-chip: rgba(255,255,255,.08);
+    --glass-chip-active: rgba(255,255,255,.15);
+    color-scheme: dark;
+  }
+
+  :root[data-theme="light"]{
+    --bg: #F6F4EF;
+    --bg-panel: #FFFFFF;
+    --bg-panel-2: #F0EDE6;
+    --line: #DDD8CC;
+    --text: #16181D;
+    --text-muted: #4B515C;
+    --text-dim: #6B7280;
+    --amber: #9A5F08;
+    --teal: #1F7A68;
+
+    --on-amber: #FFFFFF;
+    --bg-rgb: 246,244,239;
+    --hair: rgba(22,24,29,.12);
+    --hair-soft: rgba(22,24,29,.08);
+    --toggle-bg: rgba(255,255,255,.85);
+    --toggle-border: rgba(22,24,29,.16);
+    --resume-border: rgba(22,24,29,.28);
+    --nav-bg: rgba(246,244,239,.88);
+    --glass-bg: rgba(255,255,255,.55);
+    --glass-border: rgba(255,255,255,.8);
+    --glass-hi: rgba(255,255,255,.95);
+    --glass-shadow: 0 8px 32px rgba(22,24,29,.12);
+    --glass-chip: rgba(22,24,29,.05);
+    --glass-chip-active: rgba(255,255,255,.95);
+    color-scheme: light;
   }
 
   *{ margin:0; padding:0; box-sizing:border-box; }
@@ -36,7 +91,7 @@
     overflow-x:hidden;
   }
 
-  ::selection{ background:var(--amber); color:#0F1115; }
+  ::selection{ background:var(--amber); color:var(--on-amber); }
 
   a{ color:inherit; text-decoration:none; }
 
@@ -94,7 +149,7 @@
     font-size:12px;
     padding:9px 18px;
     border-radius:7px;
-    border:1px solid rgba(242,243,245,.35);
+    border:1px solid var(--resume-border);
     color:var(--text);
     letter-spacing:0.02em;
     transition:all .2s ease;
@@ -114,11 +169,11 @@
     width:40px;
     height:40px;
     border-radius:10px;
-    background:rgba(23,26,31,.78);
+    background:var(--toggle-bg);
     box-shadow:0 2px 8px rgba(0,0,0,.25);
     backdrop-filter:blur(6px);
     -webkit-backdrop-filter:blur(6px);
-    border:1px solid rgba(242,243,245,.16);
+    border:1px solid var(--toggle-border);
     cursor:pointer;
     flex-shrink:0;
     isolation:isolate;
@@ -163,7 +218,7 @@
       align-items:flex-start;
       gap:0;
       background:var(--bg-panel);
-      border-bottom:1px solid rgba(242,243,245,.12);
+      border-bottom:1px solid var(--hair);
       box-shadow:0 12px 24px rgba(0,0,0,.35);
       max-height:0;
       overflow:hidden;
@@ -188,7 +243,7 @@
       font-size:12px;
       letter-spacing:0.04em;
       color:var(--teal);
-      border-bottom:1px solid rgba(242,243,245,.08);
+      border-bottom:1px solid var(--hair-soft);
       border-left:3px solid transparent;
       transition:background .2s ease, color .2s ease, border-color .2s ease;
     }
@@ -211,6 +266,196 @@
   @media (max-width:400px){
     .nav{ padding:14px 3.5vw; }
     .nav-resume{ font-size:8px; padding:5px 8px; }
+  }
+
+  /* ---------- theme toggle + light-mode nav ---------- */
+  body{ transition:background-color .3s ease, color .3s ease; }
+  html.theme-anim *,
+  html.theme-anim *::before,
+  html.theme-anim *::after{
+    transition:background-color .3s ease, color .3s ease, border-color .3s ease, stroke .3s ease !important;
+  }
+
+  .nav-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .theme-toggle{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:36px;
+    height:36px;
+    padding:0;
+    border-radius:7px;
+    border:1px solid var(--resume-border);
+    background:transparent;
+    color:var(--text);
+    cursor:pointer;
+    flex-shrink:0;
+    transition:all .2s ease;
+  }
+  .theme-toggle:hover{ border-color:var(--amber); color:var(--amber); transform:translateY(-2px); }
+  .theme-toggle svg{
+    width:17px;
+    height:17px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+  }
+  /* dark mode shows the sun (switch to light); light mode shows the moon (switch to dark) */
+  .theme-toggle .icon-moon{ display:none; }
+  :root[data-theme="light"] .theme-toggle .icon-sun{ display:none; }
+  :root[data-theme="light"] .theme-toggle .icon-moon{ display:block; }
+
+  /* light mode: transparent nav (no bar). Over the dark hero video the nav uses light text;
+     once scrolled onto the light page it uses the dark light-mode colors. */
+  :root[data-theme="light"] .nav{
+    mix-blend-mode:normal;
+    background:none;
+  }
+  :root[data-theme="light"] .nav.on-hero .nav-logo,
+  :root[data-theme="light"] .nav.on-hero .nav-actions{
+    --text:#F2F3F5;
+    --text-muted:#A9AEB8;
+    --amber:#D4922B;
+    --resume-border:rgba(242,243,245,.35);
+  }
+  @media (min-width:641px){
+    :root[data-theme="light"] .nav.on-hero .nav-links{
+      --text:#F2F3F5;
+      --text-muted:#A9AEB8;
+      --amber:#D4922B;
+      --glass-bg: rgba(255,255,255,.07);
+      --glass-border: rgba(255,255,255,.16);
+      --glass-hi: rgba(255,255,255,.22);
+      --glass-shadow: 0 8px 32px rgba(0,0,0,.35);
+      --glass-chip: rgba(255,255,255,.08);
+      --glass-chip-active: rgba(255,255,255,.15);
+    }
+  }
+
+  :root[data-theme="light"] .nav-toggle{ box-shadow:0 2px 8px rgba(22,24,29,.12); }
+  :root[data-theme="light"] .nav-links{ box-shadow:0 12px 24px rgba(22,24,29,.12); }
+
+  @media (max-width:640px){
+    .nav-actions{ gap:6px; }
+    .theme-toggle{ width:30px; height:30px; border-radius:6px; }
+    .theme-toggle svg{ width:15px; height:15px; }
+  }
+
+  .nav-indicator{ display:none; }
+
+  /* ---------- liquid glass nav pill (desktop) ---------- */
+  @media (min-width:641px){
+    /* glass needs a normal blend mode so backdrop-filter can see the page behind it */
+    .nav{ mix-blend-mode:normal; padding-top:12px; padding-bottom:12px; }
+    .nav-resume{ padding:7px 14px; }
+    .theme-toggle{ width:32px; height:32px; }
+
+    .nav-links{
+      position:relative;
+      gap:2px;
+      padding:4px;
+      border-radius:999px;
+      overflow:hidden;
+      background:var(--glass-bg);
+      border:1px solid var(--glass-border);
+      -webkit-backdrop-filter:blur(18px) saturate(180%);
+      backdrop-filter:blur(18px) saturate(180%);
+      box-shadow:
+        var(--glass-shadow),
+        inset 0 1px 0 var(--glass-hi),
+        inset 0 -1px 0 rgba(255,255,255,.06);
+      transition:background .3s ease, border-color .3s ease, box-shadow .3s ease;
+    }
+    /* soft specular sheen across the pill */
+    .nav-links::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:inherit;
+      background:linear-gradient(120deg,
+        rgba(255,255,255,.28) 0%,
+        rgba(255,255,255,0) 38%,
+        rgba(255,255,255,0) 68%,
+        rgba(255,255,255,.10) 100%);
+      pointer-events:none;
+    }
+    .nav-links li{ position:relative; z-index:1; }
+    .nav-links a{
+      display:block;
+      padding:6px 14px;
+      font-size:12.5px;
+      border-radius:999px;
+      transition:color .2s ease, background .25s ease, box-shadow .25s ease;
+    }
+    .nav-links a::after{ display:none; }
+    .nav-links a:hover{
+      background:transparent;
+      color:var(--text);
+    }
+    .nav-links a.active{
+      background:transparent;
+      box-shadow:none;
+    }
+
+    /* sliding glass lens that follows the active link (scroll + click) */
+    .nav-indicator{
+      display:block;
+      position:absolute;
+      left:0;
+      top:0;
+      z-index:0;
+      width:0;
+      height:0;
+      border-radius:999px;
+      background:var(--glass-chip-active);
+      border:1px solid var(--glass-border);
+      box-shadow:
+        inset 0 1px 0 var(--glass-hi),
+        inset 0 -1px 0 rgba(255,255,255,.06),
+        0 4px 14px rgba(0,0,0,.18);
+      opacity:0;
+      pointer-events:none;
+      will-change:transform, width;
+      transition:
+        transform .55s cubic-bezier(.34,1.35,.64,1),
+        width .55s cubic-bezier(.34,1.35,.64,1),
+        height .3s ease,
+        opacity .25s ease,
+        background .3s ease;
+    }
+    .nav-indicator.visible{ opacity:1; }
+    .nav-indicator::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:inherit;
+      background:linear-gradient(180deg, rgba(255,255,255,.32) 0%, rgba(255,255,255,0) 55%);
+      pointer-events:none;
+    }
+    @media (prefers-reduced-motion: reduce){
+      .nav-indicator{ transition:opacity .2s ease; }
+    }
+  }
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+    @media (min-width:641px){
+      .nav-links{ background:var(--bg-panel); }
+    }
+  }
+  @media (prefers-reduced-transparency: reduce){
+    @media (min-width:641px){
+      .nav-links{
+        background:var(--bg-panel);
+        -webkit-backdrop-filter:none;
+        backdrop-filter:none;
+      }
+      .nav-links::before{ display:none; }
+    }
   }
 
   /* ---------- hero scroll-video ---------- */
@@ -247,7 +492,7 @@
     position:absolute; inset:0;
     background:
       radial-gradient(ellipse at center, transparent 35%, rgba(15,17,21,0.75) 100%),
-      linear-gradient(180deg, rgba(15,17,21,0.55) 0%, rgba(15,17,21,0.15) 30%, rgba(15,17,21,0.15) 60%, rgba(15,17,21,0.9) 100%);
+      linear-gradient(180deg, rgba(15,17,21,0.55) 0%, rgba(15,17,21,0.15) 30%, rgba(15,17,21,0.15) 60%, rgba(var(--bg-rgb),0.9) 100%);
     pointer-events:none;
   }
   .hero-grain{
@@ -258,6 +503,11 @@
   }
   .hero-content{
     position:relative; z-index:2;
+    --text:#F2F3F5;
+    --text-muted:#A9AEB8;
+    --amber:#D4922B;
+    --teal:#5FB8A6;
+    color:#F2F3F5;
     text-align:center;
     padding:0 6vw;
     transition:opacity .1s linear, transform .1s linear;
@@ -614,7 +864,7 @@
   }
   .project-link.primary{
     background:var(--amber);
-    color:#0F1115;
+    color:var(--on-amber);
     border-color:var(--amber);
     font-weight:600;
   }
@@ -712,7 +962,7 @@
   }
   .contact-btn.primary{
     background:var(--amber);
-    color:#0F1115;
+    color:var(--on-amber);
     border-color:var(--amber);
     font-weight:600;
   }
@@ -781,7 +1031,25 @@
     <li><a href="#projects">Projects</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <a class="nav-resume" href="Muhammad_Hanan_CVs.pdf" target="_blank" rel="noopener">Resume</a>
+  <div class="nav-actions">
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light mode" title="Switch to light mode">
+      <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"></circle>
+        <line x1="12" y1="2" x2="12" y2="5"></line>
+        <line x1="12" y1="19" x2="12" y2="22"></line>
+        <line x1="2" y1="12" x2="5" y2="12"></line>
+        <line x1="19" y1="12" x2="22" y2="12"></line>
+        <line x1="4.9" y1="4.9" x2="7" y2="7"></line>
+        <line x1="17" y1="17" x2="19.1" y2="19.1"></line>
+        <line x1="4.9" y1="19.1" x2="7" y2="17"></line>
+        <line x1="17" y1="7" x2="19.1" y2="4.9"></line>
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+      </svg>
+    </button>
+    <a class="nav-resume" href="Muhammad_Hanan_CVs.pdf" target="_blank" rel="noopener">Resume</a>
+  </div>
 </nav>
 
 <!-- HERO — scroll-scrubbed video -->
@@ -1348,6 +1616,7 @@
       const state = new Map(sections.map(section => [section, { isIntersecting: false, intersectionRatio: 0 }]));
 
       const recompute = () => {
+        if (window.__navLockUntil && Date.now() < window.__navLockUntil) return;
         const visible = sections
           .map(section => ({ id: section.id, ...state.get(section) }))
           .filter(entry => entry.isIntersecting)
@@ -1355,6 +1624,8 @@
 
         setActive(visible.length ? visible[0].id : null);
       };
+
+      window.__navRecompute = recompute;
 
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -1375,6 +1646,154 @@
   })();
 </script>
 
+<script>
+  /* Dark / light theme toggle — remembers the choice, otherwise follows the system setting */
+  (() => {
+    'use strict';
+
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    if (!btn) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const updateLabel = () => {
+      const label = root.getAttribute('data-theme') === 'light'
+        ? 'Switch to dark mode'
+        : 'Switch to light mode';
+      btn.setAttribute('aria-label', label);
+      btn.setAttribute('title', label);
+    };
+    updateLabel();
+
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+
+      if (!reduceMotion) {
+        root.classList.add('theme-anim');
+        setTimeout(() => root.classList.remove('theme-anim'), 350);
+      }
+
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('theme', next); } catch (_) {}
+      updateLabel();
+    });
+
+    /* Light mode: know whether the transparent nav sits over the dark hero or the light page */
+    const nav = document.querySelector('.nav');
+    const heroPin = document.getElementById('heroPin');
+    const updateNavState = () => {
+      if (!nav || !heroPin) return;
+      const overHero = heroPin.getBoundingClientRect().bottom > nav.offsetHeight;
+      nav.classList.toggle('on-hero', overHero);
+    };
+    updateNavState();
+    window.addEventListener('scroll', updateNavState, { passive: true });
+    window.addEventListener('resize', updateNavState, { passive: true });
+
+    /* Sliding glass indicator behind the active nav link (desktop) */
+    const list = document.getElementById('navLinks');
+    if (list) {
+      const links = Array.from(list.querySelectorAll('a[href^="#"]'));
+      const ind = document.createElement('div');
+      ind.className = 'nav-indicator';
+      ind.setAttribute('aria-hidden', 'true');
+      list.insertBefore(ind, list.firstChild);
+
+      let shown = false;
+      let hovered = null;
+
+      const place = (link, animate) => {
+        if (getComputedStyle(ind).display === 'none') return;
+        const lr = list.getBoundingClientRect();
+        const r = link.getBoundingClientRect();
+        const x = r.left - lr.left - list.clientLeft;
+        const y = r.top - lr.top - list.clientTop;
+        if (!animate) ind.style.transition = 'none';
+        ind.style.width = r.width + 'px';
+        ind.style.height = r.height + 'px';
+        ind.style.transform = `translate(${x}px, ${y}px)`;
+        if (!animate) {
+          void ind.offsetWidth;
+          ind.style.transition = '';
+        }
+      };
+
+      const sync = () => {
+        if (hovered) return;
+        const active = links.find(l => l.classList.contains('active'));
+        if (!active) {
+          ind.classList.remove('visible');
+          shown = false;
+          return;
+        }
+        // first appearance: jump into place, then fade in (no slide from the corner)
+        place(active, shown);
+        ind.classList.add('visible');
+        shown = true;
+      };
+
+      new MutationObserver(() => requestAnimationFrame(sync))
+        .observe(list, { attributes: true, attributeFilter: ['class'], subtree: true });
+
+      const replace = () => {
+        const active = links.find(l => l.classList.contains('active'));
+        if (active) place(active, false);
+      };
+      window.addEventListener('resize', replace, { passive: true });
+      window.addEventListener('load', replace, { once: true });
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(replace);
+
+      // Click: slide straight to the clicked link and hold it while the page scrolls there
+      let unlockTimer = 0;
+      const release = () => {
+        clearTimeout(unlockTimer);
+        window.__navLockUntil = 0;
+        if (window.__navRecompute) window.__navRecompute();
+      };
+      links.forEach(link => {
+        link.addEventListener('click', () => {
+          window.__navLockUntil = Infinity;
+          links.forEach(l => l.classList.toggle('active', l === link));
+          clearTimeout(unlockTimer);
+          unlockTimer = setTimeout(release, 1600);
+          if ('onscrollend' in window) {
+            window.addEventListener('scrollend', release, { once: true });
+          }
+        });
+      });
+
+      // Cursor: the lens slides to whichever link the mouse is over,
+      // and glides back to the active link when the cursor leaves the pill
+      links.forEach(link => {
+        link.addEventListener('pointerenter', (e) => {
+          if (e.pointerType && e.pointerType !== 'mouse') return;
+          hovered = link;
+          place(link, shown);
+          ind.classList.add('visible');
+          shown = true;
+        });
+      });
+      list.addEventListener('pointerleave', (e) => {
+        if (e.pointerType && e.pointerType !== 'mouse') return;
+        hovered = null;
+        sync();
+      });
+
+      sync();
+    }
+
+    const mq = window.matchMedia('(prefers-color-scheme: light)');
+    const onSystemChange = (e) => {
+      let saved = null;
+      try { saved = localStorage.getItem('theme'); } catch (_) {}
+      if (saved === 'light' || saved === 'dark') return;
+      root.setAttribute('data-theme', e.matches ? 'light' : 'dark');
+      updateLabel();
+    };
+    if (mq.addEventListener) mq.addEventListener('change', onSystemChange);
+  })();
+</script>
 
 </body>
 </html>
